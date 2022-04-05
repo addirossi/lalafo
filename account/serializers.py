@@ -9,7 +9,7 @@ class RegistrationSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(min_length=6, required=True)
     password_confirm = serializers.CharField(min_length=6, required=True)
-    first_name = serializers.CharField(required=True)
+    name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
 
     def validate_email(self, email):
@@ -54,7 +54,24 @@ class ActivationSerializer(serializers.Serializer):
 
 
 class LoginSerializer(serializers.Serializer):
-    pass
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(min_length=6, required=True)
+
+    def validate_email(self, email):
+        if not User.objects.filter(email=email).exists():
+            raise serializers.ValidationError('Пользователь не найден')
+        return email
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        password = attrs.get('password')
+        user = User.objects.get(email=email)
+        if not user.check_password(password):
+            raise serializers.ValidationError('Неверный пароль')
+        if not user.is_active:
+            raise serializers.ValidationError('Аккаунт не активен')
+        attrs['user'] = user
+        return attrs
 
 
 class ForgotPasswordSerializer(serializers.Serializer):
