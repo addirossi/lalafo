@@ -55,7 +55,7 @@ class ActivationSerializer(serializers.Serializer):
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
-    password = serializers.CharField(min_length=6, required=True)
+    password = serializers.CharField(required=True)
 
     def validate_email(self, email):
         if not User.objects.filter(email=email).exists():
