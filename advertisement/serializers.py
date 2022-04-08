@@ -71,7 +71,7 @@ class AdvertisementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advertisement
         # fields = '__all__'
-        exclude = ['user']
+        exclude = ['author']
 
     def create(self, validated_data):
         validated_data['author'] = self.context['request'].user
