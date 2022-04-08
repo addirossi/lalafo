@@ -5,7 +5,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from account.serializers import RegistrationSerializer, ActivationSerializer, LoginSerializer
+from account.serializers import RegistrationSerializer, ActivationSerializer, LoginSerializer, ChangePasswordSerializer, \
+    ForgotPasswordSerializer
 
 
 class RegistrationView(APIView):
@@ -42,11 +43,23 @@ class LogoutView(APIView):
 
 
 class ForgotPasswordView(APIView):
-    pass
+    def post(self, request):
+        serializer = ForgotPasswordSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.create_new_password()
+            return Response('Вам на почту выслан новый пароль')
 
 
 class ChangePasswordView(APIView):
-    pass
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = ChangePasswordSerializer(data=request.data,
+                                              context={'request': request})
+        if serializer.is_valid(raise_exception=True):
+            serializer.set_new_password()
+            return Response('Пароль успешно обновлён')
+
 
 
 #REST

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Advertisement, AdvertisementGallery
+from .models import Advertisement, AdvertisementGallery, Category
 
 
 class ImageSerializer(serializers.ModelSerializer):
@@ -87,3 +87,9 @@ class AdvertisementSerializer(serializers.ModelSerializer):
         representation['images'] = ImageSerializer(instance.images.all(),
                                                    many=True).data
         return representation
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = '__all__'

@@ -1,10 +1,11 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
-from advertisement.views import AdvertisementViewSet
+from advertisement.views import AdvertisementViewSet, CategoriesViewSet
 
 router = DefaultRouter()
 router.register('', AdvertisementViewSet)
+router.register('categories', CategoriesViewSet)
 
 urlpatterns = [
     # path('', AdvertisementsListView.as_view()),

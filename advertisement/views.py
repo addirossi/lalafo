@@ -9,13 +9,13 @@ from django.shortcuts import render
 from django_filters import rest_framework as filters
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.viewsets import ModelViewSet
 
-from .models import Advertisement
+from .models import Advertisement, Category
 from .permissions import IsAuthor
 from .serializers import AdvertisementListSerializer, \
-    AdvertisementSerializer
+    AdvertisementSerializer, CategorySerializer
 
 
 # class CreateAdvertisementView(CreateAPIView):
@@ -84,8 +84,15 @@ class AdvertisementViewSet(ModelViewSet):
             return [IsAuthor()]
         return []
 
+
 class CategoriesViewSet(ModelViewSet):
-    pass
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def get_permissions(self):
+        if self.action in ['create', 'update', 'partial_update', 'destroy']:
+            return [IsAdminUser()]
+        return []
 
 # ads/            create, list
 # ads/id/         details, update, destroy
